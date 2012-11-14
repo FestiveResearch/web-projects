@@ -1,0 +1,293 @@
+<div class="block text padded" itemscope itemtype="http://schema.org/Product">
+    <meta itemprop="url" content="{{ shop.url }}{{ product.url }}" />
+    <meta itemprop="image" content="{{ product.featured_image.src | product_img_url: 'grande' }}" />
+  
+    <div id="crumbregion" class="padded">
+        {% if collection %}
+            <div class="nextprev">
+            {% if collection.previous_product %}
+                <a class="prev" href="{{ collection.previous_product }}">&larr; Prev</a>
+            {% endif %}
+            {% if collection.previous_product and collection.next_product %}
+                <span class="divider">|</span>
+            {% endif %}
+            {% if collection.next_product %}
+                <a class="text" href="{{ collection.next_product }}">Next &rarr;</a>
+            {% endif %}
+            </div>
+        {% endif %}
+        <div class="crumbs desktop-only">
+            {% if collection %}
+            <a href="{{ collection.url }}">&laquo; back to {{ collection.title }}</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="padded cf">
+        <div id="product-gallery">
+            <div class="main-image{% if product.images.size == 1 %} onlyimage{% endif %}">
+                <a href="{{ product.featured_image | product_img_url: 'master' }}" title="{{ product.featured_image.alt | escape }}" data-index="0">
+                    <img src="{{ product.featured_image | product_img_url: 'grande' }}" alt="{{ product.title | escape }}"/>
+                </a>
+            </div>
+            
+            {% if product.images.size > 1 %}
+                <ul id="thumbs" class="cf">
+                {% for image in product.images %}
+                    <li{% if forloop.first %} class="first"{% endif %}>
+                        <a class="gallery" href="{{ image | product_img_url: 'master' }}" title="{{ image.alt | escape }}" data-index="{{ forloop.index0 }}">
+                            <img src="{{ image | product_img_url: 'grande' }}" alt="{{ image.alt | escape }}" />
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
+                <script>
+                $(function(){
+                    //Set up Fancybox - and show in correct place in gallery
+                    $(document).on('click', '#product-gallery .main-image a', function(){
+                        var imgs = Array();
+                        $('#thumbs a').each(function(){
+                            imgs.push({
+                                href: $(this).attr('href'),
+                                title: $(this).attr('title')
+                            });
+                        });
+                        var opts = {
+                            index: $(this).data('index')
+                        };
+                        $.fancybox(imgs, opts);
+                        return false;
+                    });
+                    //Click thumb
+                    $(document).on('click', '#thumbs a', function(){
+                        //Fix container height
+                        var $main = $('#product-gallery .main-image');
+                        $main.css({
+                            height: $main.height()
+                        });
+                        
+                        //Change to new image
+                        $main.find('a').attr({
+                            'href': $(this).attr('href'),
+                            'title': $(this).attr('title')
+                        }).data('index', $(this).data('index'));
+                        $('#product-gallery .main-image a img').attr('src', $(this).find('img').attr('src'));
+                        
+                        //Animate height
+                        $main.animate({ height: $main.find('a').height() }, 200, function(){
+                            $(this).css('height', '');
+                        });
+                        return false;
+                    });
+                });
+                </script>
+            {% else %}
+                <script>
+                    $(function(){
+                        $('#product-gallery .main-image a').fancybox();
+                    });
+                </script>
+            {% endif %}
+        </div><!-- /#product-gallery -->
+        
+        <div id="product-info">
+            <div class="inner">
+                {% include 'product-label' with product %}
+                <div class="majorinfo {% if label != '' %} haslabel{% endif %}">
+                    {{ label }}
+                    
+                    <h1 itemprop="name">{{ product.title }}</h1>
+                    
+                    <div class="pricearea">
+                        {% if product.variants.first.compare_at_price > product.variants.first.price %}
+                            <span class="was-price">{{ product.variants.first.compare_at_price | money }}</span>
+                        {% endif %}
+                        <span class="price" itemprop="price">{{ product.variants.first.price | money }}</span>
+                        <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
+                    </div>
+                {% if settings.prod_show_vendor %}
+                    <p>{{ settings.text_vendor }}: <span itemprop="brand">{{ product.vendor | link_to_vendor }}</span></p>
+                {% endif %}
+                </div>
+                {% if product.available %}
+                <link itemprop="availability" href="http://schema.org/InStock" />
+                <form class="form" action="/cart/add" method="post" enctype="multipart/form-data">
+                    <div class="productoptions section">
+                        {% if product.variants.size > 1 %}
+                            <div>
+                                <label for="product-select">
+                                    {% if product.options.size == 1 %}
+                                        {{ product.options.first }}
+                                    {% else %}
+                                        Options
+                                    {% endif %}
+                                </label>
+                                <span class="styleddrop">
+                                    <select id="product-select" name="id">
+                                    {% for variant in product.variants %}
+                                        <option value="{{ variant.id }}">{{ variant.title | escape }} - {{ variant.price | money }}</option>
+                                    {% endfor %}
+                                    </select>
+                                </span>
+                            </div>
+                            
+                            {% include 'product-dropdown-js' with 'product-info' %}
+                        
+                        {% else %}
+                            <p>
+                                {% if product.options.size == 1 %}
+                                    {{ product.options.first }}:
+                                {% else %}
+                                    Option:
+                                {% endif %}
+                                {{ product.variants.first.title }}
+                            </p>
+                            <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+                        {% endif %}
+                        
+                        <div>
+                            <label for="quantity">Quantity</label>
+                            <div class="quantadd">
+                                <input id="quantity" name="quantity" value="1" size="2" />
+                                <input type="submit" name="add" id="add-to-cart" value="{{ settings.text_addtocart }}" />
+                            </div>
+                        </div>
+                    </div><!-- /.options -->
+                </form>
+                {% else %}
+                    <link itemprop="availability" href="http://schema.org/OutOfStock" />
+                    <div>This product is unavailable</div>
+                {% endif %}
+            
+                {% unless settings.prod_desc_under %}
+                    {% assign strip_desc_size = product.description | strip_html | replace: ' ', '' | size %}
+                    {% if strip_desc_size > 0 %}
+                        <div class="description section" itemprop="description">
+                        {{ product.description }}
+                        </div>
+                    {% endif %}
+                {% endunless %}
+                
+                {% if settings.prod_show_type or settings.prod_show_tags %}
+                <div class="morelinks section">
+                    {% if settings.prod_show_type %}
+                        <div class="contentsection">See more: {{ product.type | link_to_type }}</div>
+                    {% endif %}
+                
+                    {% comment %} List out product tags - don't show special 'meta' tags {% endcomment %}
+                    {% if settings.prod_show_tags %}
+                        {% assign tags_exist = false %}
+                        {% capture tag_html %}
+                        <div class="tags">
+                            Tags: 
+                            {% for tag in product.tags %}
+                                {% unless tag contains 'meta-' %}
+                                {% assign tags_exist = true %}
+                                <a href="/collections/all/{{ tag | handleize }}">{{ tag }},</a>
+                                {% endunless %}
+                            {% endfor %}
+                        </div>
+                        {% endcapture %}
+                        {% if tags_exist %}{{ tag_html }}{% endif %}
+                    {% endif %}
+                </div><!-- /.morelinks -->
+                {% endif %}
+                
+                {% include 'social-sharing' %}
+            </div>
+        </div><!-- /#product-info -->
+    </div><!-- /.padded -->
+    
+    {% if settings.prod_desc_under %}
+        {% assign strip_desc_size = product.description | strip_html | replace: ' ', '' | size %}
+        {% if strip_desc_size > 0 %}
+            <div class="descriptionunder padded" itemprop="description">
+                {{ product.description }}
+            </div>
+        {% endif %}
+    {% endif %}
+    
+    {% assign show_related = false %}
+    {% capture related_markup %}
+    <div id="related-products">
+        <h2 class="majortitle">Related Products</h2>
+        <div class="blocklayout">
+            {% if settings.prod_rel_meth == 'collection' %}
+                {% assign product_collection = collection %}
+                {% assign product_image_size_norm = true %}
+                {% assign prod_rel_count = 0 %}
+                {% assign prod_rel_limit_int = settings.prod_rel_limit | plus: 0 %}
+                {% assign prod_rel_limit_plus_one = prod_rel_limit_int | plus: 1 %}
+                {% paginate product_collection.products by prod_rel_limit_plus_one %}
+                    {% for relprod in product_collection.products %}
+                        {% if relprod.handle != product.handle and prod_rel_limit_int > prod_rel_count %}
+                            {% assign prod_rel_count = prod_rel_count | plus: 1 %}
+                            {% assign show_related = true %}
+                            {% include 'product-block' with relprod %}
+                        {% endif %}
+                    {% endfor %}
+                {% endpaginate %}
+            {% elsif settings.prod_rel_meth == 'tag-coll' %}
+                {% for tag in product.tags %}
+                    {% if tag contains 'meta-related-collection-' %}
+                        {% assign product_collection_handle = tag | remove: 'meta-related-collection-' %}
+                        {% assign product_collection = collections[product_collection_handle] %}
+                        {% assign product_image_size_norm = true %}
+                        {% assign prod_rel_count = 0 %}
+                        {% assign prod_rel_limit_int = settings.prod_rel_limit | plus: 0 %}
+                        {% assign prod_rel_limit_plus_one = prod_rel_limit_int | plus: 1 %}
+                        {% paginate product_collection.products by prod_rel_limit_plus_one %}
+                            {% for relprod in product_collection.products %}
+                                {% if relprod.handle != product.handle and prod_rel_limit_int > prod_rel_count %}
+                                    {% assign prod_rel_count = prod_rel_count | plus: 1 %}
+                                    {% assign show_related = true %}
+                                    {% include 'product-block' with relprod %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endpaginate %}
+                    {% endif %}
+                {% endfor %}
+            {% elsif settings.prod_rel_meth == 'tag-handle' %}
+                {% assign show_related = true %}
+                {% if settings.serve_overlarge_imgs %}
+                    {% assign rel_image_size = 'large' %}
+                {% else %}
+                    {% assign rel_image_size = 'medium' %}
+                {% endif %}
+                <script id="product-block-template" type="text/template">
+                    {% assign no_quick_buy = true %}
+                    {% include 'product-block' with relprod %}
+                </script>
+                <script>
+                //Load in related products via ajax
+                $(function(){
+                    Shopify.money_format = '{{shop.money_format | replace: "'", '"'}}';
+                    var related_tags = {{ product.tags | json }};
+                    var i;
+                    var tags_max = Math.min(related_tags.length, {{ settings.prod_rel_limit }});
+                    for(i=0; i<tags_max; i++) {
+                        if(related_tags[i].indexOf('meta-related-product-') >= 0) {
+                            var rel_handle = related_tags[i].substring('meta-related-product-'.length);
+                            $.getJSON('/products/'+rel_handle+'.js', function(data) {
+                                var $template = $($('#product-block-template').html());
+                                $template.find('.productlabel').remove();
+                                $template.find('a').attr({ href: data.url, title: data.title });
+                                $template.find('.main img').attr('src', data.featured_image.replace(/(\.jpg|\.png|\.jpeg|\.gif)/, '_{{ rel_image_size }}$1')).attr('alt', data.title);
+                                $template.find('.sub a.title').html(data.title);
+                                $template.find('.sub .pricearea .price').html(Shopify.formatMoney(data.price));
+                                if(data.price < data.compare_at_price_max) {
+                                    $template.find('.sub .pricearea .price').before($('<span class="was-price">').html(Shopify.formatMoney(data.compare_at_price_max)));
+                                }
+                                $('#related-products .blocklayout').append($template);
+                                $('#related-products .masonry').masonry();
+                            });
+                        }
+                    }
+                });
+                </script>
+            {% endif %}
+        </div>
+    </div>
+    {% endcapture %}
+    {% if show_related %}{{ related_markup }}{% endif %}
+</div><!-- /.block -->

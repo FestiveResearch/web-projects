@@ -1,0 +1,56 @@
+<div class="blocklayout">
+    <div class="block text size-large">
+        <div class="main">
+            <h1>Our Collections</h1>
+        </div>
+        
+        <div class="sub meta cf">
+            {% include 'social-sharing' %}
+        </div>
+    </div>
+    
+    {% for collection in collections %}
+        {% unless collection.handle == 'all' or collection.handle contains 'frontpage' %}
+        <div class="block product size-{{ settings.home_coll_size }}">
+            <div class="main">
+                {% if collection.image %}
+                    {{ collection.image.src | collection_img_url: settings.home_coll_size | img_tag: collection.image.alt | link_to: collection.url, collection.title }}
+                {% else %}
+                    {% assign prod_image_size = settings.home_coll_size %}
+                    {% if settings.serve_overlarge_imgs %}
+                        {% if prod_image_size == 'large' %}{% assign prod_image_size = 'grande' %}{% endif %}
+                        {% if prod_image_size == 'medium' %}{% assign prod_image_size = 'large' %}{% endif %}
+                    {% endif %}
+                    {% paginate collection.all_products by 1 %}
+                    {{ collection.all_products.first.featured_image | product_img_url: prod_image_size | img_tag: collection.all_products.first.featured_image.alt | link_to: collection.url, collection.title }}
+                    {% endpaginate %}
+                {% endif %}
+            </div>
+            <div class="sub middle">
+                <a class="title" href="{{ collection.url }}">{{ collection.title }}</a>
+            </div>
+            <div class="sub meta">
+                <p>{{ collection.all_products_count }} products</p>
+                
+                {% assign tags_to_show = 0 %}
+                {% capture tag_filter_html %}
+                    <ul id="tagblock{{ collection.handle }}" class="taglist" style="display:none">
+                    {% for tag in collection.all_tags %}
+                        {% unless tag contains 'meta-' %}
+                        {% assign tags_to_show = tags_to_show | plus: 1 %}
+                        <li><a href="{{ collection.url }}/{{ tag | handle }}">{{ tag }}</a>,</li>
+                        {% endunless %}
+                    {% endfor %}
+                    </ul>
+                {% endcapture %}
+                {% if tags_to_show > 0 %}
+                    <span class="iconmeta tags"><a class="togglebutton" data-target="#tagblock{{ collection.handle }}" 
+                        data-text-show="{{ tags_to_show }} tags (show)" data-text-hide="{{ tags_to_show }} tags (hide)"
+                        data-speed="100" href="#">{{ tags_to_show }} tags (show)</a></span>
+                    {{ tag_filter_html }}
+                {% endif %}
+            </div>
+        </div>
+        {% endunless %}
+    {% endfor %}
+</div>

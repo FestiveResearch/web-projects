@@ -1,0 +1,114 @@
+<div class="block">
+    <h1 class="pagetitle double-padded">{{ settings.text_head_cart }}</h1>
+    {% if cart.items == empty %}
+        <div class="main">Your shopping cart is empty.</div>
+    {% else %}
+        <form action="/cart" method="post" id="cartform">
+            <ul>
+            {% for item in cart.items %}
+                <li class="main padded item cf {{ item.product.handle }}">
+                    <a class="remove toggler" onclick="return confirm('Are you sure you want to remove this item?')" href="/cart/change?line={{ forloop.index }}&quantity=0">&#215;</a>
+                    
+                    <div class="image">
+                        {% assign imagePicked = false %}
+                        {% if image.alt != item.product.title and image.alt != '' %}
+                            {% for image in item.product.images %}
+                                {% if item.variant.title contains image.alt  %}
+                                    <a href="{{ item.product.url }}"><img src="{{ image | product_img_url: 'small' }}" alt="{{ image.alt | escape }}" /></a>
+                                    {% assign imagePicked = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        {% unless imagePicked %}
+                            <a href="{{ item.product.url }}"><img src="{{ item.product.images.first | product_img_url: 'small' }}" alt="{{ item.title | escape }}" /></a>
+                        {% endunless %}
+                    </div>
+                    
+                    <div class="desc">
+                        <a class="name" href="{{ item.product.url }}">{{ item.title }}</a>
+                        {% for p in item.properties %}
+                            {% unless p.last == blank %}
+                                <span class="custom">{{ p.first }}:
+                                {% if p.last contains '/uploads/' %}
+                                    <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                                {% else %}
+                                    {{ p.last }}
+                                {% endif %}
+                                </span>
+                            {% endunless %}
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="quantotal">
+                        <div class="quantity">
+                            <label for="updates_{{ item.id }}">Qty:</label> 
+                            <input type="text" size="2" id="updates_{{ item.id }}" name="updates[]" value="{{ item.quantity }}" />
+                        </div>
+                        <div class="line-total">{{ item.line_price | money }}</div>
+                    </div>
+                </li><!-- /.item -->
+            {% endfor %}
+            </ul>
+            
+            <div class="double-padded sidesonly cf">
+                <input type="submit" class="update-totals" name="update" value="Update cart" />
+                
+                {% if true or settings.show_checkout_note %}
+                <div id="checkout-note">
+                    <label for="note"><a href="#" id="toggle-note">{{ settings.text_addnote }}</a></label>
+                    <div class="textareawrapper"><textarea id="note" name="note">{{ cart.note }}</textarea></div>
+                </div>
+                <script>
+                
+                $('#checkout-note').toggleClass('hide-note', $('#note').val().length <= 0);
+                $(function(){
+                    $(document).on('click', '#toggle-note', function(){
+                        $('#checkout-note').toggleClass('hide-note');
+                        return false;
+                    });
+                });
+                </script>
+                {% endif %}
+            </div>
+            
+            {% include 'shipping-calculator' %}
+            
+            <div class="double-padded sidesonly divided">
+                <div class="finalinfo">
+                    <span class="subtotal">{{ settings.text_subtotal }}: {{ cart.total_price | money_with_currency }}</span>
+                    {% unless settings.text_undertotal_1 == empty %}
+                    <p>{{ settings.text_undertotal_1 }}</p>
+                    {% endunless %}
+                    {% unless settings.text_undertotal_2 == empty %}
+                    <p>{{ settings.text_undertotal_2 }}</p>
+                    {% endunless %}
+                </div>
+            </div>
+            <div class="double-padded sidesonly divided cf">
+                {% if settings.cart_terms_show %}
+                <span class="termsagreement"><input type="checkbox" id="terms" /> <label for="terms">I agree to the <a href="{{ pages[settings.cart_terms_page].url }}" target="_blank">terms and refund policy</a></label></span>
+                <script>
+                    $(document).on('click', 'form #update-cart', function() {
+                        var $form = $(this).closest('form');
+                        if($form.has('#terms') && $form.find('#terms:checked').length == 0) {
+                            alert('You must agree to the terms and conditions before continuing');
+                            return false;
+                        }
+                    });
+                </script>
+                {% endif %}
+                <div class="checkoutrow">
+                    <div class="checkoutbuttoncont">
+                        <input type="submit" id="update-cart" name="checkout" value="{{ settings.text_proceedchkt }}" />
+                        {% if additional_checkout_buttons %}
+                        <div id="additional-checkout-buttons">
+                            <span>Or check out using:</span>
+                            {{ content_for_additional_checkout_buttons }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+</div>

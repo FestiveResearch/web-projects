@@ -1,0 +1,109 @@
+{% comment %}
+Example of use:
+
+{% assign product_collection = collection %}
+{% include 'product-block' with product %}
+
+{% endcomment %}
+{% assign image_size = 'medium' %}
+{% if product-block.tags contains 'meta-image-large' %}
+    {% unless product_image_size_norm %}
+        {% assign image_size = 'large' %}
+    {% endunless %}
+{% endif %}
+{% assign block_size = image_size %}
+
+{% if settings.serve_overlarge_imgs %}
+{% if image_size == 'large' %}{% assign image_size = 'grande' %}{% endif %}
+{% if image_size == 'medium' %}{% assign image_size = 'large' %}{% endif %}
+{% endif %}
+
+{% include 'product-label' with product-block %}
+
+{% assign collection_colour_class = '' %}
+
+{% if product_collection %}
+    {% capture product_url %}{{ product-block.url | within: product_collection }}{% endcapture %}
+{% else %}
+    {% capture product_url %}{{ product-block.url }}{% endcapture %}
+{% endif %}
+<div class="block product size-{{ block_size }}">
+    <div class="main">
+        <a href="{{ product_url }}" title="{{ product-block.title | escape }}">
+        {{ label }}
+        {{ product-block.featured_image | product_img_url: image_size | img_tag: product-block.featured_image.alt }}
+        </a>
+        {% if settings.prod_block_display contains 'hover' %}
+        <div class="hoverinfo">
+            <a href="{{ product_url }}">
+                <div class="title">{{ product-block.title }}</div>
+                <div class="lower">
+                    <p class="money">
+                        {% if product-block.compare_at_price_max > product-block.price %}
+                            <span class="previously">{{ product-block.compare_at_price_max | money }}</span>
+                        {% endif %}
+                        {% if product-block.price_varies %}<span class="from">from</span>{% endif %}
+                        <span class="actual">{{ product-block.price | money }}</span>
+                    </p>
+                    <span class="arr">&rarr;</span>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if settings.prod_block_display contains 'info' %}
+    <div class="sub">
+        <p><a class="title" href="{{ product_url }}">{{ product-block.title }}</a></p>
+        <p class="pricearea">
+            {% if product-block.compare_at_price_max > product-block.price %}
+                <span class="was-price">{{ product-block.compare_at_price_max | money }}</span>
+            {% endif %}
+            {% if product-block.price_varies %}<span class="from">from</span>{% endif %}
+            <span class="price">{{ product-block.price | money }}</span>
+        </p>
+        
+        {% if settings.prod_block_display contains 'quick' %}
+        {% unless no_quick_buy %}
+        {% assign quickbuy_block_id = 'info_' | append: product-block.id %}
+        <a class="toggler togglebutton quickbuytoggle" data-exclusive-group="1" data-target="#{{ quickbuy_block_id }}" data-speed="0" data-text-show="+" data-text-hide="&#215;" href="#">+</a>
+    </div>
+    <div class="sub quickbuyarea" id="{{ quickbuy_block_id }}">
+        <form action="/cart/add" method="post" enctype="multipart/form-data">
+            <div class="productoptions">
+                {% if product-block.variants.size > 1 %}
+                <div class="row">
+                    <label for="product-select_{{ product-block.id }}">
+                        {% if product-block.options.size == 1 %}
+                            {{ product-block.options.first }}
+                        {% else %}
+                            Options:
+                        {% endif %}
+                    </label>
+                    <select id="product-select_{{ product-block.id }}" name="id">
+                    {% for variant in product-block.variants %}<option value="{{ variant.id }}">{{ variant.title | escape }} - {{ variant.price | money }}</option>{% endfor %}
+                    </select>
+                </div>
+                
+                {% assign no_style_wrap = true %}
+                {% include 'product-dropdown-js' with quickbuy_block_id %}
+                {% else %}
+                <div class="row">{{ product-block.variants.first.title }}</div>
+                <input type="hidden" name="id" value="{{ product-block.variants.first.id }}" />
+                {% endif %}
+                
+                <div class="row quantityrow">
+                    <label for="quantity_{{ product-block.id }}">Quantity:</label>
+                    <input type="text" value="1" size="2" name="quantity" id="quantity_{{ product-block.id }}" />
+                </div>
+            </div>
+            <div class="buttoncontainer">
+                <p class="price"></p>
+                <input type="submit" name="add" id="add-to-cart" value="{{ settings.text_addtocart }}" />
+            </div>
+        </form>
+        {% endunless %}
+        {% endif %}
+    </div>
+    {% endif %}
+</div>

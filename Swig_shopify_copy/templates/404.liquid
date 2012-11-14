@@ -1,0 +1,17 @@
+<div class="blocklayout">
+    <div class="block size-large">
+        <div class="main">
+            <h1 class="pagetitle">{{ settings.text_head_404 }}</h1>
+            <p>You may want to return to the <a href="/">home page</a> or <a href="/search">try a search</a>.</p>
+        </div>
+    </div>
+    {% if settings.show_404_sads %}
+    {% for i in (1..100) %}
+    <div class="block text">
+        <div class="main">
+            <h2 style="text-align:center"><strong>{% cycle ':(', '404' %}</strong></h2>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>

@@ -1,0 +1,75 @@
+{% if settings.show_signup %}
+<div class="registerform">
+    <span class="title">{{ settings.text_subs_title }}</span>
+    {% unless settings.mailchimp_code_use %}
+        {% form 'customer' %}
+            {% if form.posted_successfully? %}
+                <p class="msg">Thank you for your interest!</p>
+            {% else %}
+                {% if form.errors %}
+                    {% for field in form.errors %}
+                    <p class="msg error">{{ field | capitalize }} - {{ form.errors.messages[field] }}</p>
+                    {% endfor %}
+                {% endif %}
+                <div class="panelinputblock">
+                    <div class="panelinputinner">
+                        <input type="hidden" id="contact_tags" name="contact[tags]" value="prospect,newsletter"/>
+                        <input type="email" class="text required" value="" name="contact[email]" placeholder="Add your email address..." />
+                        <input type="submit" class="coolbutton" value="&rarr;" />
+                    </div>
+                </div>
+            {% endif %}
+        {% endform %}
+    {% else %}
+        <form action="{{ settings.mailchimp_code }}" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+            <div class="panelinputblock">
+                <div class="panelinputinner">
+                    <input type="email" class="required email text" value="" required name="EMAIL" placeholder="Enter your email address" />
+                    <input type="submit" class="coolbutton" name="subscribe" value="&rarr;" />
+                </div>
+            </div>
+        </form>
+    {% endunless %}
+</div>
+{% endif %}
+
+{% if settings.social_icons_placement == 'footerovercopy' %}
+{% include 'social-icons' with 'infooter' %}
+{% endif %}
+
+<div class="copy">
+    {% unless settings.footer_copy == empty %}
+    <p class="custom">{{ settings.footer_copy }}</p>
+    {% endunless %}
+    {% if settings.footer_show_copyright %}
+    <p>Copyright &copy; {{ "now" | date: "%Y" }} <a href="/">{{ shop.name }}. </a></p>
+    {% endif %}
+    {% if settings.footer_show_themeby %}
+    <p>Original theme by <a href="http://www.cleancanvas.co.uk" target="_blank">Clean Canvas.</a></p>
+    {% endif %}
+    
+    <p>{{ powered_by_link }}</p>
+</div>
+
+
+{% if settings.social_icons_placement == 'footerundercopy' %}
+{% include 'social-icons' with 'infooter' %}
+{% endif %}
+
+{% if settings.footer_page_under_copy != blank %}
+    <div class="copy">{{ pages[settings.footer_page_under_copy].content }}</div>
+{% endif %}
+
+{% if settings.pay_dankort or settings.pay_google_wallet or settings.pay_discover or settings.pay_paypal or settings.pay_amex or settings.pay_maestro or settings.pay_cirrus or settings.pay_mastercard or settings.pay_visa %}
+<ul id="payment-methods">  
+    {% if settings.pay_paypal %}<li class="pay-paypal">PayPal</li>{% endif %}
+    {% if settings.pay_visa %}<li class="pay-visa">Visa</li>{% endif %}
+    {% if settings.pay_mastercard %}<li class="pay-mastercard">Mastercard</li>{% endif %}
+    {% if settings.pay_amex %}<li class="pay-amex">Amex</li>{% endif %}
+    {% if settings.pay_discover %}<li class="pay-discover">Discover</li>{% endif %}
+    {% if settings.pay_cirrus %}<li class="pay-cirrus">Cirrus</li>{% endif %}
+    {% if settings.pay_maestro %}<li class="pay-maestro">Maestro</li>{% endif %}
+    {% if settings.pay_google_wallet %}<li class="pay-google-wallet">Google Wallet</li>{% endif %}
+    {% if settings.pay_dankort %}<li class="pay-dankort">Dankort</li>{% endif %}
+</ul>
+{% endif %}

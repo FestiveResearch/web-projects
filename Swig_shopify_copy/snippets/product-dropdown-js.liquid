@@ -1,0 +1,76 @@
+<script>
+    $(function() {
+        //Triggered when an option is chosen
+        var selectCallback = function(variant, selector) {
+            {% if settings.enable_var_img_link and template contains 'product' %}
+                {% assign option_to_match = settings.var_img_link_optname %}
+                {% assign option_index = 0 %}
+                {% for option in product.options %}
+                    {% if option == option_to_match %}
+                        {% assign option_index = forloop.index0 %}
+                    {% endif %}
+                {% endfor %}
+                //Link variants to images
+                if (variant) {
+                    $('#product-gallery #thumbs a[title="'+variant.options[{{ option_index }}]+'"]').trigger('click');
+                }
+            {% endif %}
+            
+            if (variant && variant.available == true) {
+                // remove unavailable class from add-to-cart button, and re-enable button
+                var $btn = $('#{{ product-dropdown-js }} input[type="submit"]');
+                $btn.removeAttr('disabled').val($btn.data('defText'));
+                
+                var newHtml = '';
+                if(variant.compare_at_price > variant.price) {
+                    newHtml = '<span class="was-price">' + Shopify.formatMoney(variant.compare_at_price, "{{shop.money_format}}") + '</span>';
+                }
+                newHtml += '<span class="price">' + Shopify.formatMoney(variant.price, "{{shop.money_format}}") + '</span>';
+                $('#{{ product-dropdown-js }} .pricearea').html(newHtml);  // update price field
+            } else {
+                // variant doesn't exist or is unavailable
+                var message = variant ? "Sold Out" : "Unavailable";
+                // set add-to-cart button to unavailable
+                $('#{{ product-dropdown-js }} input[type="submit"]').attr('disabled', 'disabled').val(message);
+                $('#{{ product-dropdown-js }} .pricearea').html(message); // update price-field message
+            }
+        };
+    
+        //Save default button text
+        var $btn = $('#{{ product-dropdown-js }} form input[type="submit"]');
+        $btn.data('defText', $btn.val());
+        
+        {% unless no_style_wrap %}
+        //Remove any dropdown style markup
+        $('#{{ product-dropdown-js }} .productoptions .styleddrop select').unwrap();
+        {% endunless %}
+        
+        //Split dropdowns into multiple
+        var dropdownID = $('#{{ product-dropdown-js }} select[name="id"]').attr('id');
+        new Shopify.OptionSelectors(dropdownID, { product: {{ product | json }}, onVariantSelected: selectCallback });
+        {% assign found_one_in_stock = false %}
+        {% for variant in product.variants %}
+            {% if variant.available and found_one_in_stock == false %}
+                {% assign found_one_in_stock = true %}
+                //Choose first variant in stock
+                {% for option in product.options %}
+                    jQuery('#{{ product-dropdown-js }} .productoptions .single-option-selector:eq(' + {{ forloop.index0 }} + ')').val({{ variant.options[forloop.index0] | json }}).trigger('change');
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        
+        //Hide dropdown label
+        if($('#{{ product-dropdown-js }} .productoptions .selector-wrapper').length > 1) {
+            $('#{{ product-dropdown-js }} .productoptions label[for="'+dropdownID+'"]').hide();
+        }
+        
+        {% unless no_style_wrap %}
+        //Style all visible select dropdowns
+        $('#{{ product-dropdown-js }} .productoptions select').each(function(){
+            if($(this).css('display') != 'none') {
+                $(this).wrap('<span class="styleddrop">');
+            }
+        });
+        {% endunless %}
+    });
+</script>

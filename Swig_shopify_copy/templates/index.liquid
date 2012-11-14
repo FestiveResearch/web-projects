@@ -1,0 +1,123 @@
+<div class="blocklayout{% if settings.home_rand %} randomise{% endif %}">
+
+{% unless pages[settings.home_page] == empty %}
+<div class="block text size-large notrandom">
+    <div class="main">
+        <h1 class="pagetitle">{{ pages[settings.home_page].title }}</h1>
+        <div id="maindesc">{{ pages[settings.home_page].content }}</div>
+    </div>
+    {% if settings.home_text_contracted %}
+        <script>
+            document.getElementById('maindesc').style.display= 'none';
+            $(function(){
+                var truncdesc = {{ pages[settings.home_page].content | strip_html | truncate: 200 | json }};
+                var nontrunclength = {{ pages[settings.home_page].content | strip_html | json | size }};
+                var expandBtnHtml = '<a id="toggledesc" class="readmore" href="#"><span>read more</span></a>';
+                var fullDesc = $('#maindesc').html();
+                
+                if(truncdesc.length >= nontrunclength) {
+                    return;
+                }
+                
+                $('#maindesc').html(truncdesc).css('display', 'block')
+                    .after(expandBtnHtml);
+                
+                $(document).on('click', '#toggledesc', function(){
+                    if($(this).toggleClass('expanded').hasClass('expanded')) {
+                        $('#maindesc').html(fullDesc);
+                        $(this).children(':first').html('read less');
+                    } else {
+                        $('#maindesc').html(truncdesc);
+                        $(this).children(':first').html('read more');
+                    }
+                    $('.masonry').masonry();
+                    return false;
+                });
+            });
+        </script>
+    {% endif %}
+</div>
+{% endunless %}
+
+{% unless settings.home_twit == empty %}
+<div class="block text size-large">
+    <div id="tweetblockmain" class="main">
+        <h1 class="pagetitle">Latest Tweets</h1>
+        <div id="hometweet"></div>
+    </div>
+</div>
+<script>
+$(function(){
+    $("#hometweet").bind('loaded', function(){
+        $(this).addClass('flexslider').flexslider({
+            animation: 'fade',
+            slideshow: false,
+            prevText: '-',
+            nextText: '+',
+            after:function(slider){ $(slider).closest('.masonry').masonry() }
+        });
+        if (window.PIE) {
+            $('#content .block .flex-direction-nav a').each(function() {
+                PIE.attach(this);
+            });
+        }
+    }).tweet({
+        username: "{{ settings.home_twit }}",
+        count:10,
+        loading_text: "loading tweets...",
+        join_text: 'auto',
+        auto_join_text_default: "we said,", 
+        auto_join_text_ed: "we",
+        auto_join_text_ing: "we were",
+        auto_join_text_reply: "we replied to",
+        auto_join_text_url: "we were checking out"
+    });
+});
+</script>
+{% endunless %}
+
+{% for i in (1..3) %}
+    {% assign set_index = 'ad_' | append: i | append: '_show' %}
+    {% unless settings[set_index] == empty %}
+    {% assign ad_url_index = 'ad_' | append: i | append: '_src' %}
+    {% assign ad_title_index = 'ad_' | append: i | append: '_title' %}
+    {% assign ad_title_bord = 'ad_' | append: i | append: '_bord' %}
+    
+    <div class="block home-image {% if settings[ad_title_bord] == 'trans' %}transparent{% endif %} size-{{ settings[set_index] }}">
+        {% if settings[ad_title_bord] == 'border' %}<div class="main">{% endif %}
+        {% if settings[ad_url_index] == empty %}
+            <img src="{{ 'ad_' | append: i | append: '_img.png' | asset_url }}" alt="{{ settings[ad_title_index] }}" />
+        {% else %}
+            <a href="{{ settings[ad_url_index] }}" title="{{ settings[ad_title_index] }}"><img src="{{ 'ad_' | append: i | append: '_img.png' | asset_url }}" alt="{{ settings[ad_title_index] }}" /></a>
+        {% endif %}
+        {% if settings[ad_title_bord] == 'border' %}</div>{% endif %}
+    </div>
+    {% endunless %}
+{% endfor %}
+
+{% for link in linklists[settings.home_add_pages].links %}
+<div class="block {% if link.title contains 'imagewithborder' %}home-imagelink{% endif %} size-{% if link.title contains 'small' %}normal{% else %}large{% endif %}">
+    {% if link.title contains 'withborder' %}<div class="main">{% endif %}
+    {{ link.object.content }}
+    {% if link.title contains 'withborder' %}</div>{% endif %}
+</div>
+{% endfor %}
+
+{% for link in linklists[settings.home_coll_list].links %}
+<div class="block collection size-{{ settings.home_coll_size }}">
+    <div class="main">
+        {% if link.object.image %}
+            {{ link.object.image.src | collection_img_url: settings.home_coll_size | img_tag: link.object.image.alt | link_to: link.object.url, link.object.title }}
+        {% endif %}
+    </div>
+    {% if settings.home_coll_title %}
+    <div class="sub">
+        <a class="title" href="{{ link.object.url }}">{{ link.object.title }}</a>
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+
+{% include 'product-list' with collections[settings.home_coll] %}
+
+</div>

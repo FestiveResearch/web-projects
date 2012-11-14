@@ -1,0 +1,89 @@
+{% paginate collection.products by settings.coll_num_per_page %}
+{% unless settings.coll_show_paging contains 'top' %}
+<div class="blocklayout">
+{% endunless %}
+
+    <div class="block text size-{{ settings.coll_title_width }}">
+        <div class="main">
+            <h1 class="pagetitle">{{ collection.title }}
+                {% for tag in current_tags %}
+                / {{ tag }}
+                {% endfor %}
+            </h1>
+            {% if collection.description != '' %}
+                <div id="colldesc"{% if settings.lightbox_imgs %} class="lightboximages"{% endif %}>
+                    {{ collection.description }}
+                </div>
+                {% unless settings.show_col_desc_def %}
+                    <script>
+                        document.getElementById('colldesc').style.display= 'none';
+                        $(function(){
+                            var truncdesc = {{ collection.description | strip_html | truncate: 200 | json }};
+                            var nontrunclength = {{ collection.description | strip_html | json | size }};
+                            var expandBtnHtml = '<a id="toggledesc" class="readmore" href="#"><span>read more</span></a>';
+                            var fullDesc = $('#colldesc').html();
+                            
+                            if(truncdesc.length >= nontrunclength) {
+                                return;
+                            }
+                            
+                            $('#colldesc').html(truncdesc).css('display', 'block')
+                                .after(expandBtnHtml);
+                            
+                            $(document).on('click', '#toggledesc', function(){
+                                if($(this).toggleClass('expanded').hasClass('expanded')) {
+                                    $('#colldesc').html(fullDesc);
+                                    $(this).children(':first').html('read less');
+                                } else {
+                                    $('#colldesc').html(truncdesc);
+                                    $(this).children(':first').html('read more');
+                                }
+                                $('.masonry').masonry();
+                                return false;
+                            });
+                        });
+                    </script>
+                {% endunless %}
+            {% endif %}
+        </div>
+        <div class="sub meta cf">
+            {% if settings.show_tagfilt and collection.handle and collection.tags.size > 0 %}
+            <label for="tagfilter">{{ settings.text_filter_c }}</label> <select class="navdrop" name="tagfilter">
+                <option value="{{ shop.url }}/collections/{{ collection.handle }}">All Products</option>
+                {% for tag in collection.all_tags %}
+                    {% comment %}Don't show tags used for relating products together{% endcomment %}
+                    {% unless tag contains 'meta-' %}
+                        {% if current_tags contains tag %}
+                            <option value="{{ shop.url }}/collections/{{ collection.handle }}/{{ tag | handleize }}" selected="selected">{{ tag }}</option>
+                        {% else %}
+                            <option value="{{ shop.url }}/collections/{{ collection.handle }}/{{ tag | handleize }}">{{ tag }}</option>
+                        {% endif %}
+                    {% endunless %}
+                {% endfor %}
+            </select>
+            {% endif %}
+            
+            &nbsp;
+            
+            {% include 'social-sharing' %}
+        </div>
+    </div>
+
+{% if settings.coll_show_paging contains 'top' %}
+{% include 'pagination-control' %}
+<div class="blocklayout">
+{% endif %}
+
+    {% if collection.products.size == 0 %}
+        <div class="block text size-large"><div class="main">There are no products here.</div></div>
+    {% else %}
+        {% include 'product-list' with collection %}
+    {% endif %}
+
+</div><!-- /.blocklayout -->
+
+{% if settings.coll_show_paging contains 'bottom' %}
+{% include 'pagination-control' %}
+{% endif %}
+
+{% endpaginate %}

@@ -1,0 +1,269 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+    <!-- Version 1.2 -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+        content="width=device-width,
+                minimum-scale=1.0,
+                maximum-scale=1.0,
+                initial-scale=1.0,
+                user-scalable=no;" />
+    
+    {% if template == 'index' %}
+    <title>{{ shop.name }}</title>
+    {% elsif template == '404' %}
+    <title>Page Not Found | {{ shop.name }}</title>
+    {% else %}
+    <title>{{ page_title }} | {{ shop.name }}</title>
+    {% endif %}
+    
+    <link rel="canonical" href="{{ canonical_url }}" />
+    
+    {% assign maxmeta = 155 %}
+    {% if template contains 'product' %}
+    <meta name="description" content="{{ product.description | strip_html | strip_newlines | truncate: maxmeta | escape }}" />
+    {% elsif template contains 'page' %}
+    <meta name="description" content="{{ page.content | strip_html | strip_newlines | truncate: maxmeta | escape }}" />
+    {% elsif template == 'index' and shop.description != '' %}
+    <meta name="description" content="{{ shop.description }}" />
+    {% endif %}
+    
+    {% comment %} upload your own .ico file to the Assets section {% endcomment %}
+    <link rel="shortcut icon" type="image/x-icon" href="{{ 'favicon.ico' | asset_url }}">
+    
+    {% comment %}
+    If you want to set custom icons to use on Apple iOS devices, upload the following files, delete this text, and un-comment these link tags
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ 'logo_apple_57.png' | asset_url }}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ 'logo_apple_72.png' | asset_url }}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ 'logo_apple_114.png' | asset_url }}">
+    {% endcomment %}
+    
+    {% comment %} Open Graph (Facebook) {% endcomment %}
+    <meta property="og:site_name" content="{{ shop.name | escape }}" />
+    {% if template == 'product' %}
+        <meta property="og:image" content="{{ product.featured_image | product_img_url: 'medium' }}" />
+        <meta property="og:description" content="{{ productdesc | strip_html | truncatewords:20 | escape }}" />
+        <meta property="og:title" content="{{ product.title | escape }} - {{ shop.name | escape }}" />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content="{{ shop.url }}{{ product.url }}" />
+    {% elsif template contains 'article' %}
+        <meta property="og:title" content="{{ article.title | escape }} - {{ shop.name | escape }}" />
+        <meta property="og:description" content="{{ article.content | strip_html | truncatewords:20 | escape }}" />
+        <meta property="og:url" content="{{ shop.url }}{{ article.url }}" />
+        <meta property="og:type" content="article" />
+        {% if article.content contains '<img' %}
+            {% assign src = article.content | split: 'src="' %}
+            {% assign src = src[1] | split: '"' | first | replace: '//cdn', 'http://cdn' | replace: 'http:http://', 'http://' %}
+            {% if src %}<meta property="og:image" content="{{ src }}" />{% endif %}
+        {% elsif settings.use_logo_img %}
+            <meta property="og:image" content="{{ 'shop_logo.png' | asset_url }}" />
+        {% endif %}
+    {% else %}
+        <meta property="og:type" content="website" />
+        {% if settings.use_logo_img %}
+            <meta property="og:image" content="{{ 'shop_logo.png' | asset_url }}" />
+        {% endif %}
+        {% if template == 'index' %}
+            <meta property="og:url" content="{{ shop.url }}" />
+        {% elsif template == 'blog' %}
+            <meta property="og:url" content="{{ shop.url }}{{ blog.url }}" />
+        {% endif %}
+    {% endif %}
+    
+    {% comment %} Google Fonts {% endcomment %}
+    {% for i in (1..3) %}
+        {% capture font_setting_index %}{% cycle 'group1': 'font_fam_base', 'font_fam_head', 'font_fam_shoptitle' %}{% endcapture %}
+        {% capture font_setting_cust_index %}{{ font_setting_index }}_cust{% endcapture %}
+        {% assign font_family_split = settings[font_setting_index] | split: '|' %}
+        {% assign curr_font_family = settings[font_setting_index] %}
+        {% if settings[font_setting_index] == 'GWF|CUSTOM' %}
+            <link href='http://fonts.googleapis.com/css?family={{ settings[font_setting_cust_index] | replace: ' ', '+' }}' rel='stylesheet' type='text/css'>
+        {% elsif font_family_split.first == 'GWF' %}
+            <link href='http://fonts.googleapis.com/css?family={{ font_family_split.last | replace: ' ', '+' }}' rel='stylesheet' type='text/css'>
+        {% endif %}
+    {% endfor %}
+    
+    {{ content_for_header }}
+    
+    {{ 'styles.css' | asset_url | stylesheet_tag }}
+    {{ 'flexslider.css' | asset_url | stylesheet_tag }}
+    {{ 'jquery.fancybox-1.3.4.css' | asset_url | stylesheet_tag }}
+    
+    {% if template contains 'customers' %}
+    {{ "shopify_common.js" | shopify_asset_url | script_tag }}
+    {{ "customer_area.js"  | shopify_asset_url | script_tag }}
+    {% endif %}
+    
+    {{ 'option_selection.js' | shopify_asset_url | script_tag }}
+    {{ '//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js' | script_tag }}
+    {{ 'jquery.imagesloaded.min.js' | asset_url | script_tag }}
+    {{ 'jquery.masonry.min.js' | asset_url | script_tag }}
+    {% unless settings.home_twit == empty %}{{ 'jquery.tweet.js' | asset_url | script_tag }}{% endunless %}
+    {{ 'main.js' | asset_url | script_tag }}
+    {{ 'jquery.flexslider-min.js' | asset_url | script_tag }}
+    {{ 'jquery.fancybox-1.3.4.pack.js' | asset_url | script_tag }}
+
+{% comment %} Rounded corners and vertically-centred text for all {% endcomment %}
+<!--[if lt IE 10]>
+{{ 'PIE.js' | asset_url | script_tag }}
+<script>
+$(function() {
+    if (window.PIE) {
+        $('.block.product .main .productlabel, .coolbutton, #content .block a.toggler, .sociallinks a, .block').each(function() {
+            PIE.attach(this);
+        });
+    }
+});
+</script>
+<![endif]-->
+
+<!--[if IE 8]>
+{{ 'ie8.css' | asset_url | stylesheet_tag }}
+<![endif]-->
+
+<!--[if lt IE 8]>
+{{ 'ie7.css' | asset_url | stylesheet_tag }}
+<![endif]-->
+
+{% comment %} CSS that needs snippets {% endcomment %}
+<style type="text/css">
+{% unless settings.panel_bg_opacity == '0' or settings.panel_bg_opacity == '1' or settings.panel_bg_opacity == empty %}
+    /* Translucent background */
+    {% assign hex2rgb_hex = settings.panel_bg_col %}
+    {% include 'hex2rgb' %}
+
+    #navbar,
+    #mobilefooter {
+        background:rgba({{ hex2rgb_r }},{{ hex2rgb_g }},{{ hex2rgb_b }},{{ settings.panel_bg_opacity }});
+    }
+    #navbar .search input[type=text],
+    .footer .registerform input[type=email] {
+        background:transparent;
+    }
+{% endunless %}
+</style>
+</head>
+
+<body class="{% if customer %}customer-logged-in {% endif %}template-{{ template | split: '.' | first }}">
+    {% if settings.bg_method contains 'full' %}<div id="ios_scroll"></div>{% endif %}
+    <div class="bodywrap cf">
+        <div id="navbar">        
+            <div id="navpanel">
+                <div id="shoplogo"><a href="/" title="{{ shop.name }}">
+                {% if settings.use_logo_img %}
+                    <img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" />
+                {% else %}
+                    <span class="logotext">{{ shop.name }}</span>
+                {% endif %}
+                </a></div>
+                
+                {% if settings.social_icons_placement == 'underlogo' %}
+                {% include 'social-icons' with 'underlogo' %}
+                {% endif %}
+                
+                {% if cart.item_count > 0 or settings.show_cart_whenempty or shop.customer_accounts_enabled %}
+                <div class="cartsummary{% if settings.social_icons_placement == 'underlogo' %} socialabove{% endif %}">
+                    {% if shop.customer_accounts_enabled %}
+                        <span class="account">
+                        {% if customer  %}
+                            <a href="/account">Your Account</a> | {{ 'Logout' | customer_logout_link }}
+                        {% else %}
+                            {{ settings.text_acctlogin | append: ' &rarr;' | customer_login_link }}
+                        {% endif %}
+                        </span>
+                    {% endif %}
+                    {% if cart.item_count > 0 or settings.show_cart_whenempty %}
+                    <a href="/{% if template != 'cart' or settings.cart_terms_show %}cart{% else %}checkout{% endif %}">
+                        {% if shop.customer_accounts_enabled %}
+                            <span class="inline title">{{ settings.text_cart }} :</span>
+                        {% else %}
+                            <span class="title">{{ settings.text_cart }}</span>
+                        {% endif %}
+                        <span class="numitems">{{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}</span>
+                        <span class="amount">{{ cart.total_price | money_with_currency }}</span>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <div class="searchnavwrap panelinputblock">
+                    <div class="search panelinputinner">
+                        <form action="/search" method="get">
+                            <input type="text" class="text" name="q" placeholder="{{ settings.text_search }}"/>
+                            <input type="submit" class="coolbutton" value="&rarr;" />
+                        </form>
+                    </div>
+                    
+                    <button data-target=".mainnav > ul" data-speed="200" class="btn-opts togglebutton" type="button"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                </div>
+                
+                <div class="mainnav">
+                    {% if settings.panel_nav_show_second_col %}
+                        {% capture menu_html_second %}
+                            {% include 'main-navigation' with 'footer' %}
+                        {% endcapture %}
+                        {% assign second_menu_active = any_link_active %}
+                    {% else %}
+                        {% assign second_menu_active = false %}
+                    {% endif %}
+                    
+                    <ul>
+                    {% if settings.panel_nav_show_second_col %}
+                        <li class="first{% unless second_menu_active %} active{% endunless %}">
+                            <div class="title">
+                                <div>{{ linklists.main-menu.title }}</div>
+                            </div>
+                            {% include 'main-navigation' with 'main-menu' %}
+                        </li>
+                        
+                        <li{% if second_menu_active %} class="active"{% endif %}>
+                            <div class="title">
+                                {{ linklists.footer.title }}
+                            </div>
+                            {{ menu_html_second }}
+                        </li>
+                    {% else %}
+                        <li class="first only active">
+                            {% include 'main-navigation' with 'main-menu' %}
+                        </li>
+                    {% endif %}
+                    </ul>
+                </div>
+                
+                <div class="footer desktop-only">
+                    {% include 'footer' %}
+                </div>
+                <a href="#" id="navtoggle">&larr;</a>
+            </div>
+        </div>
+        <div id="content">
+            {% if template == 'list-collections' %}
+                {% include 'collection-listing' %}
+            {% else %}
+                {{ content_for_layout }}
+            {% endif %}
+        </div>
+    </div>
+    
+    <div id="mobilefooter" class="footer mobile-only">
+        {% include 'footer' %}
+    </div>
+    
+    <a id="scrolltotop" href="#navbar">top</a>
+
+{% if facebook_on_page %}
+<script>(function(d, s, id) {
+var js, fjs = d.getElementsByTagName(s)[0];
+if (d.getElementById(id)) return;
+js = d.createElement(s); js.id = id;
+js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+{% endif %}
+</body>
+</html>

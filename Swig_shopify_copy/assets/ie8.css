@@ -1,0 +1,8 @@
+.block.product .main .hoverinfo {
+    display:none;
+}
+.block.product .main:hover .hoverinfo {
+    display:block;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(opacity=50)";
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#46000000, endColorstr=#46000000);
+}

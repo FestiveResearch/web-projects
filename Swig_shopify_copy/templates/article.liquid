@@ -1,0 +1,135 @@
+<div class="block text">
+    <div id="crumbregion" class="double-padded">
+        <div class="nextprev">
+        {% if blog.previous_article %}
+            <a class="prev" href="{{ blog.previous_article }}">&larr; Prev</a>
+        {% endif %}
+        {% if blog.previous_article and blog.next_article %}
+            <span class="divider">|</span>
+        {% endif %}
+        {% if blog.next_article %}
+            <a class="text" href="{{ blog.next_article }}">Next &rarr;</a>
+        {% endif %}
+        </div>
+        
+        <div class="crumbs desktop-only">
+            <a class="first" href="{{ blog.url }}" title="{{ blog.title }}">{{ blog.title }}</a>
+            <span class="div">&gt;</span>
+            <a href="{{ article.url }}">{{ article.title }}</a>
+        </div>
+    </div>
+
+    <div class="main padded">
+        <a class="rsslink" href="{{ blog.url }}.atom" title="{{ blog.title | escape }} RSS"><img src="{{ settings.rss_col | asset_url }}" alt="{{ blog.title | escape }} RSS"/></a>
+        <h1 class="pagetitle">{{ article.title }}</h1>
+        {% if settings.lightbox_imgs %}
+            <div class="lightboximages">{{ article.content }}</div>
+        {% else %}
+            {{ article.content }}
+        {% endif %}
+    </div>
+    <div class="sub meta double-padded">
+        <div>
+            <span class="iconmeta author">{{ article.author | escape }}</span>
+            <span class="iconmeta time">{{ article.published_at | date: "%B %d, %Y" }}</span>
+            <span class="iconmeta tags"><a class="togglebutton" data-target="#tagblock" 
+            data-text-show="{{ article.tags.size }} tags (show)" data-text-hide="{{ article.tags.size }} tags (hide)"
+            data-speed="100" href="#">{{ article.tags.size }} tags (show)</a></span>
+            
+            {% if article.tags.size > 0 %}
+                <ul id="tagblock" class="taglist" style="display:none">
+                {% for tag in article.tags %}
+                    <li>{{ tag | link_to_tag: tag }}{% unless forloop.last %},{% endunless %}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        {% include 'social-sharing' %}
+    </div>
+</div>
+
+{% if blog.comments_enabled? %}
+    {% if article.comments != blank %}
+        {% paginate article.comments by 100 %}
+        <div id="comments" class="block text">
+            <div class="double-padded sidesonly">
+                <h2>Comments</h2>
+            </div>
+            
+            {% comment %} Loop through approved comments: {% endcomment %}        
+            {% for comment in article.comments reversed %}
+                <div class="double-padded sidesonly divided cf">
+                    {% if settings.show_gravatars %}
+                        <div class="gravatar">
+                            <img src="http://www.gravatar.com/avatar/{{ comment.email | remove: ' ' | strip_newlines | downcase | md5 }}" alt="{{ comment.author }}" />
+                        </div>
+                    {% endif %}
+                    <div class="comment">
+                        <p>{{ comment.author }} said:</p>
+                        <div>{{ comment.content }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            {% comment %} Show a comment that was *just* submitted {% endcomment %}
+            {% if comment and comment.created_at and blog.moderated == false %}
+                <div class="double-padded sidesonly divided cf">
+                    {% if settings.show_gravatars %}
+                        <div class="gravatar">
+                            <img src="http://www.gravatar.com/avatar/{{ comment.email | remove: ' ' | strip_newlines | downcase | md5 }}" alt="{{ comment.author }}" />
+                        </div>
+                    {% endif %}
+                    <div class="comment">
+                        <p>{{ comment.author }} said:</p>
+                        <div>{{ comment.content }}</div>
+                    </div>
+                </div>
+            {% endif %}
+        </div> <!-- /#comments -->
+        {% include 'pagination-control' %}
+        {% endpaginate %}   
+    {% endif %}
+
+    <div class="form block text">
+        <div class="main padded">
+            {% form article %}
+            <h2>Leave a comment</h2>
+            
+            {% if form.posted_successfully? %}
+              <p>Your comment has been successfully submitted.</p>
+            {% endif %}
+            
+            {% if blog.moderated? %}
+            <p>Please note: comments must be approved before they are published.</p>
+            {% endif %}
+            
+            {% if form.errors %}
+                <p>Not all the fields have been filled out correctly!</p>
+                <ul class="error">
+                {% for field in form.errors %}
+                    <li>{{ field | capitalize }} {{ form.errors.messages[field] }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+    
+            <div class="inputrow{% if form.errors contains 'author' %} has-error{% endif %}">
+                <label for="comment_author">Name <span class="req">*</span></label>
+                <input type="text" id="comment_author" name="comment[author]" size="40" value="{{form.author}}" />
+            </div>
+            <div class="inputrow{% if form.errors contains 'email' %} has-error{% endif %}">
+                <label for="comment_email">Email <span class="req">*</span></label>
+                <input type="text" id="comment_email" name="comment[email]" size="40" value="{{form.email}}" />
+            </div>
+            <div class="inputrow{% if form.errors contains 'body' %} has-error{% endif %}">
+                <label for="comment_body">Comment <span class="req">*</span></label>
+                <textarea id="comment_body" name="comment[body]" cols="40" rows="5">{{form.body}}</textarea>
+            </div>
+            
+            <div class="buttonrow">
+                <input type="submit" value="Post comment" id="comment-submit" class="btn" />
+            </div>
+            {% endform %}
+        </div>
+    </div> <!-- /.form -->
+    
+{% endif %}

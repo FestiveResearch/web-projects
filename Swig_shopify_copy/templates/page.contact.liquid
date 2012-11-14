@@ -1,0 +1,37 @@
+<div class="block text">
+    <div class="main contactpagecontent padded{% if settings.lightbox_imgs %} lightboximages{% endif %}">
+        <h1 class="pagetitle">{{ page.title }}</h1>
+        {{ page.content }}
+    </div>
+    <div class="main form padded sidesonly">
+    {% form 'contact' %}
+        {% if form.posted_successfully? %}
+          <p><strong>Thank you for contacting us!</strong> We'll get back to you as soon as we can.</p>
+        {% endif %}
+        
+        {% if form.errors %}
+            <ul>
+            {% for field in form.errors %}
+                <li class="error">{{ field | replace: 'body','Message' | capitalize }} - {{ form.errors.messages[field] }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        
+        <div class="inputrow{% if form.errors contains 'name' %} has-error{% endif %}">
+            <label for="contact_name" class="hoverlabel">Name</label>
+            <input type="text" data-fieldname="Your name" class="required" id="contact_name" name="contact[name]" />
+        </div>
+        <div class="inputrow{% if form.errors contains 'email' %} has-error{% endif %}">
+            <label for="contact_email" class="hoverlabel">Email Address</label>
+            <input type="email" data-fieldname="Your email" class="required" id="contact_email" class="email" name="contact[email]" />
+        </div>
+        <div class="inputrow{% if form.errors contains 'body' %} has-error{% endif %}">
+            <label for="message" class="hidden">Message</label>
+            <textarea id="message" data-fieldname="Your message" class="required" name="contact[body]"></textarea>
+        </div>
+        <div class="buttonrow">
+            <input type="submit" class="button" value="Send" />
+        </div>
+    {% endform %}
+    </div><!-- /.form -->
+</div>

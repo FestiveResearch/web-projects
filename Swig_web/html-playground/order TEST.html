@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Swig! Instant Beer Delivery in SF.</title>
+        <meta name="description" content="Swig! offers instant home beer delivery to North Beach, Financial District, Russian Hill, 		Nob Hill, Union Square, Chinatown, Jackson Square, Telegraph Hill and parts of the Marina in San Francisco. Get cold cold beer 		delivered in 30 minutes or less."
+        <meta property="og:site_name" content="Swig! Instant Beer Delivery."/>
+        
+        <meta name="viewport" content="width=device-width">
+        <link rel="canonical" href="http://www.swigme.com">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/bootstrap-responsive.css">
+        <link rel="stylesheet" href="css/main.css">
+        <style type="text/css">
+
+          #step-1, #step-2, #step-3, #saveForm
+          { visibility:hidden; }
+
+          #step-1 { visibility:visible; }
+
+          .next-button { width:200px; height:80px; margin:20px auto; display:block; }
+        </style>
+        <script src="js/vendor/modernizr-2.6.1.min.js"></script>
+        
+       <script type="text/javascript">
+
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-34222523-1']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+        <script> 
+          //This is the JS that animates shit. Thanks Benny, you rock!;
+            window.onload = function() {
+              $('.next-button').on('click', function() {
+                var step = $(this).parent().attr('id');
+                switch (step) {
+                  case 'step-1':
+                    $('#step-1').css('visibility', 'hidden');
+                    $('#step-2').css('visibility', 'visible');
+                    break;
+                  case 'step-2':
+                    $('#step-2').css('visibility', 'hidden');
+                    $('#step-3').css('visibility', 'visible');
+                    break;
+                  case 'step-3':
+                    $('#saveForm').trigger('click');
+                    break;
+                  default:window.location.reload();
+                }
+              });
+              // $('#saveForm').on('click', function() { alert('Submitted motha fucka!'); });
+            };
+        </script>
+        <script src="scripts/wufoo.js"></script>
+
+		<!--[if lt IE 10]>
+		<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+    </head> <!--End Head tag-->
+
+    <body><!--Start Body-->
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div class="container">       
+        	<div class="navbar-inverse">
+	        	
+		        	<a class="brand" href="http://swigme.com"><h3><span itemprop="name">Swig!</span><small itemprop="locality"> San Francisco</small></h3></a>
+			    </div> <!--End Navbar-->
+
+      
+        	
+
+            <div class="heroic-unit" id="main"><!--Order Form Goes here-->
+             	<form id="form1" name="form1" class="wufoo topLabel page" autocomplete="off" enctype="multipart/form-data" method="post" novalidate
+				action="https://swig.wufoo.com/forms/z7x3p9/#public">
+					<header id="header" class="info">
+					<h2>Order Now</h2>
+					<div id="testicle"><a href="http://swigme.com">Swig!</a> delivers beer to <a href="http://goo.gl/maps/F72KM">select parts of San Francisco</a> until 2am.  Delivery fee is $5 before midnight, $10 after. OPEN WEEKENDS ONLY––noon to 2am.</div>
+					</header>
+
+						<ul>
+
+						<li id="foli11" class="notranslate  twoColumns     "> <!--START What kind of beer?-->
+							<fieldset>
+								<![if !IE | (gte IE 8)]>
+									<legend id="title11" class="desc">
+										What kind of beer?
+										<span id="req_11" class="req">*</span>
+									</legend>
+								<![endif]>
+								<!--[if lt IE 8]>
+								<label id="title11" class="desc">
+								What kind of beer?
+								<span id="req_11" class="req">*</span>
+								</label>
+								<![endif]-->
+								<div>
+									<input id="radioDefault_11" name="Field11" type="hidden" value="" />
+									<span>
+										<input id="Field11_0" name="Field11" type="radio" class="field radio" value="Corona Extra" tabindex="1" checked="checked"  
+										required />
+										<label class="choice" for="Field11_0" >
+										Corona Extra</label>
+									</span>
+									<span>
+										<input id="Field11_1" name="Field11" type="radio" class="field radio" value="Sierra Nevada" tabindex="2" required />
+										<label class="choice" for="Field11_1" >
+										Sierra Nevada</label>
+									</span>
+									<span>
+										<input id="Field11_2" name="Field11" type="radio" class="field radio" value="Anchor Steam" tabindex="3" required />
+										<label class="choice" for="Field11_2" >
+										Anchor Steam</label>
+									</span>
+									<span>
+										<input id="Field11_3" name="Field11" type="radio" class="field radio" value="Heineken" tabindex="4" required />
+										<label class="choice" for="Field11_3" >
+										Heineken</label>
+									</span>
+								</div> 
+							</fieldset>
+							<p class="instruct" id="instruct11"><small>Beer is $8 per six-pack. </small></p>
+						</li> <!--END What kind of beer?-->
+
+							<li id="foli216" class="notranslate       "> <!--START How many six-packs?-->
+
+								<label class="desc" id="title216" for="Field216">
+									How many do you want? 
+								</label>
+								<div>
+									<select id="Field216" name="Field216" class="field select medium" tabindex="5" > 
+									<option value="1 six-pack" >
+									1 six-pack
+									</option>
+									<option value="2 six-packs" selected="selected">
+									2 six-packs
+									</option>
+									<option value="3 six-packs" >
+									3 six-packs
+									</option>
+									<option value="4 six-packs" >
+									4 six-packs
+									</option>
+									<option value="5 six-packs" >
+									5 six-packs
+									</option>
+									<option value="6 six-packs" >
+									6 six-packs
+									</option>
+									</select>
+								</div>
+							<p class="instruct" id="instruct216"><small>The fee for delivery is the same regardless of order size. </small></p>
+						</li>	<!--END: How many six-packs?-->
+
+						<li id="foli237" class="notranslate      "> <!--START: Of course I am 21, dumbass.-->
+							<fieldset>
+							<![if !IE | (gte IE 8)]>
+								<legend id="title237" class="desc">
+								<span id="req_237" class="req">*</span>
+								</legend>
+							<![endif]>
+							<!--[if lt IE 8]>
+							<label id="title237" class="desc">
+							<span id="req_237" class="req">*</span>
+							</label>
+							<![endif]-->
+							<div>
+								<span>
+									<input id="Field237" name="Field237" type="checkbox" class="field checkbox" value="I am at least 21 years of age." tabindex="6" />
+									<label class="choice" for="Field237">I am at least 21 years of age.</label>
+								</span>
+							</div>
+							</fieldset>
+						</li><!--END: Of course I am 21, dumbass.-->
+
+						<li id="foli7" class="notranslate      "> <!--START: Hey there, What's your name?-->
+							<label class="desc" id="title7" for="Field7">
+								<span id="req_7" class="req">*</span>
+							</label>
+							<span>
+								<label for="Field7">First Name</label>
+								<input id="Field7" name="Field7" type="text" class="field text fn" value="" size="8" tabindex="7" required />
+							</span>
+							<span>
+								<label for="Field8">Last Name</label>
+								<input id="Field8" name="Field8" type="text" class="field text ln" value="" size="14" tabindex="8" required />
+							</span>
+							<p class="instruct" id="instruct7"><small>Please use your real name.  We check ID at delivery. </small></p>
+						</li><!--END: Hey there, What's your name?-->
+
+						<li id="foli219" class="phone notranslate      "> <!--START: Hey sexy, can I get your phone number?-->
+							<label class="desc" id="title219" for="Field219">
+							Phone Number
+							<span id="req_219" class="req">*</span>
+							</label>
+							<span>
+								<input id="Field219" name="Field219" type="tel" class="field text" value="" size="3" maxlength="3" tabindex="9" required />
+								<label for="Field219">###</label>
+							</span>
+							<span class="symbol">-</span>
+							<span>
+								<input id="Field219-1" name="Field219-1" type="tel" class="field text" value="" size="3" maxlength="3" tabindex="10" required />
+								<label for="Field219-1">###</label>
+							</span>
+							<span class="symbol">-</span>
+							<span>
+								<input id="Field219-2" name="Field219-2" type="tel" class="field text" value="" size="4" maxlength="4" tabindex="11" required />
+								<label for="Field219-2">####</label>
+							</span>
+							<p class="instruct" id="instruct219"><small>The driver will call you at this number to confirm your order. </small></p>
+						</li><!--END: Hey sexy, can I get your phone number?-->
+
+						<li id="foli9" class="notranslate      "> <!--START: How about ur email?-->
+							<label class="desc" id="title9" for="Field9">
+							Email
+							<span id="req_9" class="req">*</span>
+							</label>
+							<div>
+							<input id="Field9" name="Field9" type="email" spellcheck="false" class="field text medium" value="" maxlength="255" tabindex="12" required /> 
+							</div>
+							<p class="instruct" id="instruct9"><small>We'll send your receipt to this address. </small></p>
+						</li><!--END: How about ur email?-->
+
+						<li id="foli232" class="notranslate      "> <!--START: Tweet me, baby.-->
+							<label class="desc" id="title232" for="Field232">
+							Twitter ID
+							</label>
+							<div>
+								<input id="Field232" name="Field232" type="text" class="field text medium" value="@" maxlength="255" tabindex="13" onkeyup="" />
+							</div>
+							<p class="instruct" id="instruct232"><small>In the future, you'll be able to use Twitter to re-order by tweeting the <a href="https://twitter.com/search/realtime?q=%23BeerMe+%40SwigBeer&src=typd">#BeerMe</a> hashtag to <a href="https://twitter.com/swigbeer">@SwigBeer</a>.</small></p>
+						</li> <!--END: Tweet me, baby.-->
+
+						<li id="foli1" class="complex notranslate      "> <!--START: Address, please/-->
+							<label class="desc" id="title1" for="Field1">
+							<span id="req_1" class="req">*</span>
+							</label>
+							<div>
+								<span class="full addr1">
+									<label for="Field1">Street Address</label>
+									<input id="Field1" name="Field1" type="text" class="field text addr" value="" tabindex="14" required />
+								</span>
+								<span class="full addr2">
+									<label for="Field2">Apt or Suite #</label>
+									<input id="Field2" name="Field2" type="text" class="field text addr" value="" tabindex="15" />
+								</span>
+								<span class="left city adios">
+									<label for="Field3">City</label>
+									<input id="Field3" name="Field3" type="text" class="field text addr" value="San Francisco"  tabindex="16" required />
+								</span>
+								<span class="right state adios">
+									<label for="Field4">State / Province / Region</label>
+									<input id="Field4" name="Field4" type="text" class="field text addr" value="" tabindex="17" required />
+								</span>
+								<span class="left zip">
+									<label for="Field5">Zip Code</label>
+									<input id="Field5" name="Field5" type="text" class="field text addr" value="" maxlength="15" tabindex="18" required />
+								</span>
+								<span class="right country adios" >
+									<label for="Field6">Country</label>
+									<select id="Field6" name="Field6" class="field select addr" tabindex="19" >
+									<option value="United States" ></option>
+									<option value="United States" selected="selected"  type="hidden">United States</option>
+									</select>
+								</span>
+							</div>
+							<p class="complex instruct" id="instruct1"><small>Swig only delivers to <a href="http://goo.gl/maps/6zfdi">certain parts of San Francisco</a>: North Beach, Nob Hill, Russian Hill, Jackson Square, Financial District & Union Square. <a href="mailto:iwantbeer@swigme.com">Not in your area? Tell us!</a></small></p>
+						</li><!--END: Address, please/-->
+
+						<li id="foli225" class="notranslate      "> <!--START: Special Instructions./-->
+							<label class="desc" id="title225" for="Field225">
+							Any special instructions?? 
+							</label>
+								<div>
+									<textarea id="Field225" 
+									name="Field225" 
+									class="field textarea small" 
+									spellcheck="true" 
+									rows="4"
+									tabindex="20" 
+									onkeyup=""
+								 	>
+								 	</textarea>
+
+								</div>
+
+							<p class="instruct" id="instruct225"><small>e.g. "The buzzer is busted. Call me when you get downstairs. " </small></p>
+						</li><!--END: Special Instructions./-->
+
+						<li id="foli223" class="notranslate section      ">
+							<section>
+							<h3 id="title223">
+							</h3>
+								<div id="instruct223">
+									You must be 21 years old to buy beer. We take payment and CHECK ID AT DELIVERY. Swig! accepts Visa, Mastercard, Discover and American Express. <br /><br />
+								</div>
+							</section>
+						</li>
+
+						<li class="buttons btn"> <!--START: Submit Button./-->
+							<div>
+								<input id="saveForm" name="saveForm" class="btTxt submit" 
+							    type="submit" value="Send Me Beer 	"/>
+							</div>
+						</li><!--END: Submit Button./-->
+
+						<li class="hide">
+						<label for="comment">Do Not Fill This Out</label>
+						<textarea name="comment" id="comment" rows="1" cols="1"></textarea>
+						<input type="hidden" id="idstamp" name="idstamp" value="awyemb+YW12G/dE5piZIdtt7OA59Y6xQA3i4mNQaQsw=" />
+						</li>
+					</ul>
+				</form> 
+
+                
+            </div>
+            <div class="">
+            	<small>View <a href="https://maps.google.com/maps/ms?msid=201670369051972840028.0004cbda1a402d1bc5c4d&amp;msa=0&amp;ie=UTF8&amp;t=m&amp;ll=37.790795,-122.424603&amp;spn=0.040697,0.107117&amp;z=13&amp;source=embed" style="color:#0000FF;text-align:left">Swig! Beer Delivery Service Area</a> in a larger map</small>
+            </div>
+         
+          
+
+            <div class="footer">
+            	<div class="navbar navbar-inverse">
+	            	<div class="navbar-inner">
+		            	<ul class="nav">
+			            	<li><a href="http://goo.gl/maps/6zfdi">Delivery Area</a></li>
+			            	<li><a href="mailto:iwantbeer@swigme.com">Contact</a></li>
+			            	</ul>
+			            <p class="navbar-text pull-right">©Festive Research, Inc.</p>
+			         </div>
+			        </div>
+            </div> <!--End Footer-->
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+       
+    </body>
+</html>

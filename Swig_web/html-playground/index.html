@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Swig! Instant Beer Delivery in SF.</title>
+        <meta name="description" content="Swig! offers instant home beer delivery to North Beach, Financial District, Russian Hill, 		Nob Hill, Union Square, Chinatown, Jackson Square, Telegraph Hill and parts of the Marina in San Francisco. Get cold cold beer 		delivered in 30 minutes or less."
+        <meta property="og:site_name" content="Swig! Instant Beer Delivery."/>
+        
+        <meta name="viewport" content="width=device-width">
+        <link rel="canonical" href="http://www.swigme.com">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/bootstrap-responsive.css">
+        <link rel="stylesheet" href="css/main.css">
+        <style type="text/css">
+
+          #step-1, #step-2, #step-3, #saveForm
+          { visibility:hidden; }
+
+          #step-1 { visibility:visible; }
+
+          .next-button { width:200px; height:80px; margin:20px auto; display:block; }
+        </style>
+        <script src="js/vendor/modernizr-2.6.1.min.js"></script>
+        
+       <script type="text/javascript">
+
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-34222523-1']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+        <script> 
+          //This is the JS that animates shit. Thanks Benny, you rock!;
+            window.onload = function() {
+              $('.next-button').on('click', function() {
+                var step = $(this).parent().attr('id');
+                switch (step) {
+                  case 'step-1':
+                    $('#step-1').css('visibility', 'hidden');
+                    $('#step-2').css('visibility', 'visible');
+                    break;
+                  case 'step-2':
+                    $('#step-2').css('visibility', 'hidden');
+                    $('#step-3').css('visibility', 'visible');
+                    break;
+                  case 'step-3':
+                    $('#saveForm').trigger('click');
+                    break;
+                  default:window.location.reload();
+                }
+              });
+              // $('#saveForm').on('click', function() { alert('Submitted motha fucka!'); });
+            };
+        </script>
+    </head> <!--End Head tag-->
+
+    <body><!--Start Body-->
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div class="container">       
+        	<div class="navbar-inverse">
+	        	
+		        	<a class="brand" href="http://swigme.com"><h3><span itemprop="name">Swig!</span><small itemprop="locality"> San Francisco</small></h3></a>
+			    </div> <!--End Navbar-->
+
+        <div id="steps"> <!--Main Content Goes Here-->
+        	<div id="step-1"> <!--Initial Landing Page Content Goes here-->
+
+            <div class="hero-unit" id="main">
+             <h1>Cold Beer, Instant Delivery.</h1>
+             <h3>Friday - Sunday until 2am.</h3>
+                  
+              <a class="btn btn-danger btn-large next-button"><strong>Order Now</strong></a>
+              
+                 
+                <iframe width="100%" height="400px" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps/ms?msid=201670369051972840028.0004cbda1a402d1bc5c4d&amp;msa=0&amp;ie=UTF8&amp;t=m&amp;source=embed&amp;ll=37.797306,-122.419624&amp;spn=0.054258,0.20565&amp;z=12&amp;output=embed"></iframe>
+
+                <small>View <a href="https://maps.google.com/maps/ms?msid=201670369051972840028.0004cbda1a402d1bc5c4d&amp;msa=0&amp;ie=UTF8&amp;t=m&amp;ll=37.790795,-122.424603&amp;spn=0.040697,0.107117&amp;z=13&amp;source=embed" style="color:#0000FF;text-align:left">Swig! Beer Delivery Service Area</a> in a larger map</small>
+            </div>
+            <div class="">
+            <p>Swig! serves residents of North Beach, Telegraph Hill, Jackson Square, Financial District, Chinatown, Union Square, Russian Hill and Nob Hill. More neighborhoods coming soon!</p>
+            </div>
+          </div> <!--End Landing Page Contents-->
+          <div id="step-2">
+            <p>STUFFF</p>
+          </div>
+          <div id="step-3">
+            <p>MORE STUFFF</p>
+          </div>
+        </div> <!--End Main Content-->
+
+            <div class="footer">
+            	<div class="navbar navbar-inverse">
+	            	<div class="navbar-inner">
+		            	<ul class="nav">
+			            	<li><a href="http://goo.gl/maps/6zfdi">Delivery Area</a></li>
+			            	<li><a href="mailto:iwantbeer@swigme.com">Contact</a></li>
+			            	</ul>
+			            <p class="navbar-text pull-right">©Festive Research, Inc.</p>
+			         </div>
+			        </div>
+            </div> <!--End Footer-->
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+       
+    </body>
+</html>

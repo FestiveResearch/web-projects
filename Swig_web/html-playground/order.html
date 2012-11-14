@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+	<title>Test</title>
+	<style type="text/css">
+		html, body { background:#eee; color:#fc0; margin:0; padding:0; }
+		#steps 
+		{ position:absolute; top:0; left:0; width:960px; height:960px; background:#222; }
+
+		#step-1, #step-2, #step-3, #saveForm
+		{ position:absolute; top:0; left:0; width:900px; height:600px; background:#999; margin:20px; visibility:hidden; }
+
+		#step-1 { visibility:visible; }
+
+		.next-button { width:200px; height:80px; margin:20px auto; display:block; }
+	</style>
+	<script>
+	window.onload = function() {
+		$('.next-button').on('click', function() {
+			var step = $(this).parent().attr('id');
+			switch (step) {
+				case 'step-1':
+					$('#step-1').css('visibility', 'hidden');
+					$('#step-2').css('visibility', 'visible');
+					break;
+				case 'step-2':
+					$('#step-2').css('visibility', 'hidden');
+					$('#step-3').css('visibility', 'visible');
+					break;
+				case 'step-3':
+					$('#saveForm').trigger('click');
+					break;
+				default:window.location.reload();
+			}
+		});
+		// $('#saveForm').on('click', function() { alert('Submitted motha fucka!'); });
+	};
+	</script>
+
+<body>
+	<div id="steps">
+		<div id="step-1">
+			<p></p>
+			<button class="next-button">Next (2/3)</button>
+		</div>
+		<div id="step-2">
+			<p>step 2 here</p>
+			<button class="next-button">Next (3/3)</button>
+		</div>
+		<div id="step-3">
+			<p>step 3 here</p>
+			<button class="next-button">Submit</button>
+		</div>
+	</div>
+	<div id="saveForm">Form Submit</div>
+<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js'></script>	
+</body>
+</html>

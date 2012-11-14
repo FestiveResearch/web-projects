@@ -1,0 +1,44 @@
+{% paginate search.results by 10 %}
+<div class="blocklayout">
+
+    <div class="block size-large">
+        <div class="main">
+            <h1>{{ settings.text_head_search }}</h1>
+            <form id="search-form" name="search" action="/search">
+                <p>
+                    <input type="text" id="q" name="q" value="" />
+                </p>
+                <p>
+                    <input type="submit" id="search-submit" value="Search" />
+                </p>
+            </form>
+            {% if search.performed and search.results != empty %}
+                <p>You searched for: <strong>{{search.terms  | escape}}</strong>, we found {{ paginate.items }} {{ paginate.items | pluralize: 'result','results' }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+  {% if search.performed %}
+    {% if search.results == empty %}
+        <div class="block text padded"><p>No results found for your search.</p></div>
+    {% else %}
+        {% for item in search.results %} 
+            {% if item.type %}
+                {% assign product_collection = false %}
+                {% include 'product-block' with item %}
+            {% else %}
+                <div class="block text size-large">
+                    <div class="main">
+                        <p>{{ item.content | strip_html | truncatewords: 40 | highlight: search.terms }}</p>
+                    </div>
+                    <div class="sub">
+                        View page: <a href="{{ item.url }}">{{ item.title }} &rarr;</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+  {% endif %}
+</div>
+{% include 'pagination-control' %}
+{% endpaginate %}

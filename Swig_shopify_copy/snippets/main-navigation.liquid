@@ -1,0 +1,63 @@
+{% comment %} 3-tier nav! {% endcomment %}
+{% assign any_link_active = false %}
+<ul class="tier1">
+{% for link in linklists[main-navigation].links %}
+    {% assign sidelistinner1selected = false %}
+    {% assign sidelistinner2selected = false %}
+    {% assign sidelistinner2selectedthisiteration = false %}
+    {% assign linkhaschildren1 = false %}
+    
+    {% capture child_list_handle %}{{ link.title | handle }}{% endcapture %}
+    {% capture sidelistinner1 %}
+        {% unless linklists[child_list_handle] == empty %}
+            {% assign linkhaschildren1 = true %}
+        	<ul class="tier2">
+                {% for innerlink in linklists[child_list_handle].links %}
+                    {% assign linkhaschildren2 = false %}
+                    {% assign sidelistinner2selectedthisiteration = false %}
+                    {% if innerlink.active %}{% assign sidelistinner1selected = true %}{% endif %}
+                    {% capture inner_child_list_handle %}{{ innerlink.title | handle }}{% endcapture %}
+                    {% capture sidelistinner2 %}
+                        {% unless linklists[inner_child_list_handle] == empty %}
+                            {% assign linkhaschildren2 = true %}
+                            <ul class="tier3">
+                                {% for innestlink in linklists[inner_child_list_handle].links %}
+                                    {% if innestlink.active %}
+                                        {% assign sidelistinner2selected = true %}
+                                        {% assign sidelistinner2selectedthisiteration = true %}
+                                    {% endif %}
+                                    <li{% if innestlink.active %} class="active"{% endif %}>
+                                        {{ innestlink.title | link_to: innestlink.url }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endunless %}
+                    {% endcapture %}
+    			    <li class="{% if innerlink.active %}active{% endif %}{% if sidelistinner2selectedthisiteration or innerlink.active %} expanded{% endif %}">
+                        {% if linkhaschildren2 %}
+                            <a href="{{ innerlink.url }}">{{ innerlink.title }}</a>
+                            <button class="coolbutton">{% if sidelistinner2selectedthisiteration or innerlink.active %}-{% else %}+{% endif %}</button>
+                            {{ sidelistinner2 }}
+                        {% else %}
+                            <a href="{{ innerlink.url }}">{{ innerlink.title }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+    		</ul>
+        {% endunless %}
+    {% endcapture %}
+    
+    <li class="{% if link.active %}active{% endif %}{% if sidelistinner1selected or sidelistinner2selected or link.active %} expanded{% endif %}">
+        {% if sidelistinner1selected or sidelistinner2selected or link.active %}
+            {% assign any_link_active = true %}
+        {% endif %}
+        {% if linkhaschildren1 %}
+            <a class="tier1title" href="{{ link.url }}">{{ link.title }}</a>
+            <button class="coolbutton">{% if sidelistinner1selected or sidelistinner2selected %}-{% else %}+{% endif %}</button>
+            {{ sidelistinner1 }}
+        {% else %}
+            <a class="tier1title" href="{{ link.url }}">{{ link.title }}</a>
+        {% endif %}
+    </li>
+{% endfor %}
+</ul>

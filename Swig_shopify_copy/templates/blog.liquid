@@ -1,0 +1,73 @@
+{% paginate blog.articles by settings.blog_num_per_page %}
+{% if settings.blog_display_mode == 'masonry' %}
+<div class="blocklayout">
+{% endif %}
+    <div class="block {% if settings.blog_display_mode == 'masonry' %}size-uber{% endif %}">
+        <div class="main">
+            <a class="rsslink" href="{{ blog.url }}.atom" title="{{ blog.title | escape }} RSS"><img src="{{ settings.rss_col | asset_url }}" alt="{{ blog.title | escape }} RSS"/></a>
+            <h1 class="pagetitle nocontent">{{ blog.title }}</h1>
+        </div>
+        <div class="sub meta cf">
+            {% if blog.tags.size > 0 %}
+            <label for="tagfilter">{{ settings.text_filter_b }}</label> <select class="navdrop" name="tagfilter">
+                <option value="{{ shop.url }}/blogs/{{ blog.handle }}">All Articles</option>
+                {% for tag in blog.all_tags %}
+                    {% if current_tags contains tag %}
+                        <option value="{{ shop.url }}/blogs/{{ blog.handle }}/tagged/{{ tag | handleize }}" selected="selected">{{ tag }}</option>
+                    {% else %}
+                        <option value="{{ shop.url }}/blogs/{{ blog.handle }}/tagged/{{ tag | handleize }}">{{ tag }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            {% endif %}
+            
+            &nbsp;
+            
+            {% include 'social-sharing' %}
+        </div>
+    </div>
+
+    {% for article in blog.articles %}
+    <div class="block text {% if settings.blog_display_mode == 'masonry' %}size-large{% endif %}">
+        <div class="main{% if settings.lightbox_imgs %} lightboximages{% endif %}">
+            <h2 class="pagetitle">{{ article.title | link_to: article.url }}</h2>
+            {{ article.excerpt_or_content }}
+            <p class="fullarticle"><a href="{{ article.url }}">Full article &rarr;</a></p>
+        </div>
+        <div class="sub meta">
+            <div>
+                <span class="iconmeta author">{{ article.author | escape }}</span>
+                <span class="iconmeta time">{{ article.published_at | date: "%B %d, %Y" }}</span>
+                <span class="iconmeta tags"><a class="togglebutton" 
+                data-target="#tagblock{{ article.id }}" 
+                data-text-show="{{ article.tags.size }} tags (show)" data-text-hide="{{ article.tags.size }} tags (hide)"
+                data-speed="0" href="#">{{ article.tags.size }} tags (show)</a></span>
+                
+                {% if article.comments_enabled? %}
+                <span class="iconmeta comment">
+                    {% if article.comments_count > 0 %}
+                    <a href="{{article.url}}#comments">{{ article.comments_count }} {{ article.comments_count | pluralize: 'comment', 'comments' }}</a>
+                    {% else %}
+                    <a href="{{article.url}}#comments">Add a comment</a>
+                    {% endif %}
+                </span>
+                {% endif %}
+                
+                {% if article.tags.size > 0 %}
+                    <ul id="tagblock{{ article.id }}" class="taglist" style="display:none">
+                    {% for tag in article.tags %}
+                        <li>{{ tag | link_to_tag: tag }}{% unless forloop.last %},{% endunless %}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>    
+    </div>
+    {% endfor %}
+{% if settings.blog_display_mode == 'masonry' %}
+</div>
+{% endif %}
+
+{% include 'pagination-control' %}
+
+{% endpaginate %}

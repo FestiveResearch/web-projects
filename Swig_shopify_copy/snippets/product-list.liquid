@@ -1,0 +1,4 @@
+{% for product in product-list.products %}
+{% assign product_collection = product-list %}
+{% include 'product-block' with product %}
+{% endfor %}
