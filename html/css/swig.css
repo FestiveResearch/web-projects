@@ -35,6 +35,14 @@
 
 .hero-unit {
    text-align: center; 
-  
 }
 
+.center {
+	  text-align: center;
+}
+
+#social-plugins {
+	padding-left: auto;
+	padding-right: auto;
+	padding-bottom: -30px;
+}
