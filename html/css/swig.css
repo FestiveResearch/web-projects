@@ -46,3 +46,6 @@
 	padding-right: auto;
 	padding-bottom: -30px;
 }
+.black_border {
+	border: 1px solid black;
+}
