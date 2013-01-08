@@ -1,0 +1,16 @@
+*** WooCommerce Twilio SMS Notifications Plugin ***
+
+= 1.0.3 - 12/7/2012 =
+* Fix - Fix possible issue in PHP environments with E_STRICT turned on
+
+= 1.0.2 - 12/6/2012 =
+* Fix - Uncaught exception when formatting datetimes when the WordPress timezone was set to UTC or a UTC offset
+* Fix - Don't e.164 format the 'From' number or 'Test Number'
+
+= 1.0.1 - 11/30/2012 =
+* Feature - The site timezone settings are now used when displaying the Date / Time that an SMS was sent
+* Feature - Greatly improve e.164 formatting for phone numbers so international numbers now include the + symbol and correct country dialing code
+* Feature - Log errors to the WooCommerce log instead of the PHP error log for easier access when on shared or cloud hosting
+
+= 1.0.0 - 11/8/2012 =
+* Initial Release
